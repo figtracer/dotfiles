@@ -72,8 +72,31 @@ for _, lsp in ipairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    -- Custom settings only for rust_analyzer
+    settings = (lsp == "rust_analyzer") and {
+      ['rust-analyzer'] = {
+        inlayHints = {
+          bindingModeHints = { enable = false },
+          chainingHints = { enable = true },
+          closingBraceHints = { enable = true, minLines = 25 },
+          closureReturnTypeHints = { enable = "never" },
+          lifetimeElisionHints = { enable = "never" },
+          parameterHints = { enable = true },
+          reborrowHints = { enable = "never" },
+          typeHints = { enable = true },
+          maxLength = 30,
+        },
+        checkOnSave = {
+          command = "clippy",  -- use clippy instead of check
+        },
+      }
+    } or nil,
   }
 end
+
+vim.keymap.set('n', '<leader>th', function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = 0 }))
+end, { desc = 'Toggle Inlay Hints' })
 
 -- Turn on lsp status information
 require('fidget').setup()
