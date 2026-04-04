@@ -1,3 +1,7 @@
+-- Leader key must be set before plugins are loaded
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 require('keymaps')
 require('plugins.lazy')
 require('plugins.misc')
@@ -15,4 +19,3 @@ require('plugins.zenmode')
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
--- vim: ts=8 sts=2 sw=2 et

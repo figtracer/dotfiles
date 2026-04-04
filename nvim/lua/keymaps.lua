@@ -6,7 +6,6 @@ vim.api.nvim_set_keymap("n", "QQ", ":q!<enter>", {noremap=false})
 vim.api.nvim_set_keymap("n", "WW", ":w!<enter>", {noremap=false})
 vim.api.nvim_set_keymap("n", "E", "$", {noremap=false})
 vim.api.nvim_set_keymap("n", "B", "^", {noremap=false})
-vim.api.nvim_set_keymap("n", "TT", ":TransparentToggle<CR>", {noremap=true})
 vim.api.nvim_set_keymap("n", "ss", ":noh<CR>", {noremap=true})
 --
 -- splits

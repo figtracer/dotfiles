@@ -23,7 +23,7 @@ require('lazy').setup({
     ft = { "markdown" },
     build = function() vim.fn["mkdp#util#install"]() end,
   },
-  {
+{
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = {
@@ -61,10 +61,14 @@ require('lazy').setup({
       })
     end,
   },
-  "preservim/vim-pencil",
   {
-    "sourcegraph/sg.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
   },
   {
     "epwalsh/obsidian.nvim",
@@ -94,7 +98,6 @@ require('lazy').setup({
 
   'ThePrimeagen/git-worktree.nvim',
   "tpope/vim-surround",
-  'xiyaowong/nvim-transparent',
   { 
     'numToStr/FTerm.nvim',
     config = function()
@@ -163,7 +166,7 @@ require('lazy').setup({
     "rcarriga/nvim-notify",
     config = function()
       require("notify").setup({
-        background_colour = "#000000",
+        background_colour = "#0d1117",
         enabled = false,
       })
     end
@@ -209,8 +212,15 @@ require('lazy').setup({
     }
   },
 
-  'ray-x/guihua.lua',
-  { "catppuccin/nvim", as = "catppuccin" },
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('github-theme').setup()
+      vim.cmd.colorscheme 'github_dark_default'
+    end,
+  },
   {
     "windwp/nvim-autopairs",
       config = function() require("nvim-autopairs").setup {} end

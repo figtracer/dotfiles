@@ -1,62 +1,114 @@
-add_newline = false
-# A minimal left prompt
-format = """$all"""
-palette = "catppuccin_mocha"
-# move the rest of the prompt to the right
-right_format = """$all"""
+palette = "github_dark"
+add_newline = true
 command_timeout = 1000
 
-[directory.substitutions]
-'~/tests/starship-custom' = 'work-project'
+format = """
+$directory\
+$git_branch\
+$git_status\
+$fill\
+$cmd_duration\
+$kubernetes\
+$aws\
+$golang\
+$rust\
+$python\
+$nodejs\
+$lua\
+$docker_context\
+$line_break\
+$character"""
+
+[fill]
+symbol = ' '
+
+[character]
+success_symbol = '[❯](bold blue)'
+error_symbol = '[❯](bold red)'
+vimcmd_symbol = '[❮](bold green)'
+
+[directory]
+style = 'bold blue'
+read_only = ' 󰌾'
+truncation_length = 3
+truncate_to_repo = true
+repo_root_style = 'bold blue'
+repo_root_format = '[$before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) '
 
 [git_branch]
-format =  '[$symbol$branch(:$remote_branch)]($style)'
+format = '[$symbol$branch(:$remote_branch)]($style) '
+symbol = ' '
+style = 'bold purple'
+truncation_length = 20
+truncation_symbol = '…'
 
-[aws]
-format = '[$symbol(profile: "$profile" )(\(region: $region\) )]($style)'
-disabled = false
-style = 'bold blue'
-symbol = " "
+[git_status]
+format = '([$all_status$ahead_behind]($style))'
+style = 'bold red'
+ahead = '⇡${count} '
+behind = '⇣${count} '
+diverged = '⇕⇡${ahead_count}⇣${behind_count} '
+conflicted = ' '
+untracked = '? '
+stashed = '* '
+modified = '! '
+staged = '+ '
+renamed = '» '
+deleted = '✘ '
 
-[golang]
-format = '[ ](bold cyan)'
+[cmd_duration]
+min_time = 2000
+format = '[  $duration]($style) '
+style = 'yellow'
 
 [kubernetes]
-symbol = '☸ '
+symbol = '󱃾 '
 disabled = false
-detect_files = ['Dockerfile']
 format = '[$symbol$context( \($namespace\))]($style) '
-contexts = [
-  { context_pattern = "arn:aws:eks:us-west-2:577926974532:cluster/zd-pvc-omer", style = "green", context_alias = "omerxx", symbol = " " },
-]
+style = 'bold cyan'
+detect_files = ['Dockerfile', 'k8s', 'helm']
+
+[aws]
+format = '[ ($profile)]($style) '
+disabled = false
+style = 'bold yellow'
+
+[golang]
+format = '[ ($version)]($style) '
+style = 'bold cyan'
+
+[rust]
+format = '[ ($version)]($style) '
+style = 'bold red'
+
+[python]
+format = '[ ($version)]($style) '
+style = 'bold yellow'
+
+[nodejs]
+format = '[ ($version)]($style) '
+style = 'bold green'
+detect_files = ['package-lock.json', 'yarn.lock']
+detect_folders = ['node_modules']
+detect_extensions = []
+
+[lua]
+format = '[ ($version)]($style) '
+style = 'bold blue'
 
 [docker_context]
+format = '[ $context]($style) '
+style = 'bold cyan'
+only_with_files = true
+
+[package]
 disabled = true
 
-[palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
-mauve = "#cba6f7"
-red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
-green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
-blue = "#89b4fa"
-lavender = "#b4befe"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
+[palettes.github_dark]
+red = '#ff7b72'
+green = '#7ee787'
+yellow = '#d29922'
+blue = '#79c0ff'
+purple = '#d2a8ff'
+cyan = '#a5d6ff'
+orange = '#ffa657'

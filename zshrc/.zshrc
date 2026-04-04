@@ -1,52 +1,48 @@
-# Enable completion features
-autoload -Uz compinit
-compinit
+# --- Completion ---
+autoload -Uz compinit && compinit
+autoload bashcompinit && bashcompinit
 
-# Set options for better completion behavior
-setopt COMPLETE_IN_WORD    # Complete from both ends of a word
-setopt ALWAYS_TO_END       # Move cursor to end of word after completion
-setopt AUTO_MENU          # Show completion menu on successive tab press
-setopt AUTO_LIST          # Automatically list choices on ambiguous completion
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+setopt AUTO_MENU
+setopt AUTO_LIST
+setopt prompt_subst
 
-# Configure completion styles
-zstyle ':completion:*' menu select                 # Enable menu selection
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # Case insensitive completion
-zstyle ':completion:*' verbose yes                 # Provide more information in completion
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' verbose yes
 zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
 
-# Path to your oh-my-zsh installation.
+# --- Oh My Zsh ---
 export ZSH=/Users/gustavo/.oh-my-zsh
+source $ZSH/oh-my-zsh.sh
 
-# Reevaluate the prompt string each time it's displaying a prompt
-setopt prompt_subst
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-autoload bashcompinit && bashcompinit
-autoload -Uz compinit
-compinit
-
-source <(kubectl completion zsh)
-complete -C '/usr/local/bin/aws_completer' aws
+# --- Shell Plugins ---
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 bindkey '^w' autosuggest-execute
 bindkey '^e' autosuggest-accept
-eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
-# You may need to manually set your language environment
+# --- Starship ---
+export STARSHIP_CONFIG=~/.config/starship.toml
+eval "$(starship init zsh)"
+
+# --- Environment ---
 export LANG=en_US.UTF-8
 export EDITOR=/opt/homebrew/bin/nvim
 
-# Compiler flags for multi-target compilation compatability
+# --- Toolchain Flags ---
 export LDFLAGS="-L/opt/homebrew/opt/pcsc-lite/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/pcsc-lite/include"
 
-# SSH and Trezor
+# --- SSH (Trezor) ---
 export SSH_AUTH_SOCK=${HOME}/.trezor-agent/S.ssh
 
-# Aliases
+# --- Aliases ---
 alias ls="ls -alh --color=auto"
 alias la=tree
 alias cat=bat
+alias cl='clear'
+alias v="/opt/homebrew/bin/nvim"
 
 # Git
 alias gc="git commit -m"
@@ -56,6 +52,7 @@ alias gpu="git pull origin"
 alias gst="git status"
 alias glog="git log --graph --topo-order --pretty='%w(100,0,6)%C(yellow)%h%C(bold)%C(black)%d %C(cyan)%ar %C(green)%an%n%C(bold)%C(white)%s %N' --abbrev-commit"
 alias gdiff="git diff"
+alias d="git diff"
 alias gco="git checkout"
 alias gb='git branch'
 alias gba='git branch -a'
@@ -77,18 +74,6 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
-
-# GO
-export GOPATH="/opt/homebrew/Cellar/go"
-export GOCACHE="$HOME/Library/Caches/go-build"
-
-# VIM
-alias v="/opt/homebrew/bin/nvim"
-
-# Nmap
-alias nm="nmap -sC -sV -oN nmap"
-alias cl='clear'
 
 # K8S
 export KUBECONFIG=~/.kube/config
@@ -97,27 +82,31 @@ alias ka="kubectl apply -f"
 alias kg="kubectl get"
 alias kd="kubectl describe"
 alias kdel="kubectl delete"
-alias kl="kubectl logs"
+alias kl="kubectl logs -f"
 alias kgpo="kubectl get pod"
 alias kgd="kubectl get deployments"
 alias kc="kubectx"
 alias kns="kubens"
-alias kl="kubectl logs -f"
 alias ke="kubectl exec -it"
 alias kcns='kubectl config set-context --current --namespace'
-alias podname=''
 
-# HashiCorp Vault
-export VAULT_ADDR=https://localhost:8200
-
-# HTTP requests with xh!
+# HTTP
 alias http="xh"
 
-# VI Mode!!!
+# Nmap
+alias nm="nmap -sC -sV -oN nmap"
+
+# Rust
+alias rfmt="cargo +nightly fmt --all"
+
+# --- Vi Mode ---
 bindkey jj vi-cmd-mode
 
-export PATH=/opt/homebrew/bin:$PATH
-alias mat='osascript -e "tell application \"System Events\" to key code 126 using {command down}" && tmux neww "cmatrix"'
+# --- Navigation ---
+cx() { cd "$@" && l; }
+fcd() { cd "$(find . -type d -not -path '*/.*' | fzf)" && l; }
+f() { echo "$(find . -type f -not -path '*/.*' | fzf)" | pbcopy }
+fv() { nvim "$(find . -type f -not -path '*/.*' | fzf)" }
 
 function ranger {
     local IFS=$'\t\n'
@@ -135,51 +124,33 @@ function ranger {
 }
 alias rr='ranger'
 
-# navigation
-cx() { cd "$@" && l; }
-fcd() { cd "$(find . -type d -not -path '*/.*' | fzf)" && l; }
-f() { echo "$(find . -type f -not -path '*/.*' | fzf)" | pbcopy }
-fv() { nvim "$(find . -type f -not -path '*/.*' | fzf)" }
-
 eval "$(zoxide init zsh)"
 
-# Nix
+# --- Kubectl/AWS completion (lazy) ---
+if command -v kubectl &>/dev/null; then
+    source <(kubectl completion zsh)
+fi
+if [ -f /usr/local/bin/aws_completer ]; then
+    complete -C '/usr/local/bin/aws_completer' aws
+fi
+
+# --- Nix ---
 if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
    . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
 
-# Source oh-my-zsh at the end
-source $ZSH/oh-my-zsh.sh
+# --- Go ---
+export GOPATH="$HOME/go"
+export GOCACHE="$HOME/Library/Caches/go-build"
 
-# Added by Windsurf
-export PATH="/Users/gustavo/.codeium/windsurf/bin:$PATH"
-export PATH=$PATH:/Users/gustavo/.spicetify
-export PATH="$HOME/.asdf/shims:$PATH"
-# Alias for running starkup installer
-alias starkup="curl --proto '=https' --tlsv1.2 -sSf https://sh.starkup.sh | sh -s --"
-export PATH="$PATH:/Users/gustavo/.aztec/bin"
-export PATH="${HOME}/.bb:${PATH}"
-
-export NARGO_HOME="/Users/gustavo/.nargo"
-
-export PATH="$PATH:$NARGO_HOME/bin"
-export PATH="/Users/gustavo/.bb:$PATH"
-export PATH="/Users/gustavo/.bb:$PATH"
-export PATH="/Users/gustavo/.bb:$PATH"
+# --- PATH ---
+export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
-
-alias cfmt="cargo +nightly fmt --all"
-# Simple repeat: optional count, then infinite
-function repeat() {
-    local count="$1"
-    if [[ -n "$count" && "$count" =~ ^[0-9]+$ ]]; then
-        shift
-        for ((i = 1; i <= count; i++)); do
-            "$@"
-        done
-    else
-        while true; do
-            "$@"
-        done
-    fi
-}
+export PATH="$HOME/.asdf/shims:$PATH"
+export PATH="$HOME/.bb:$PATH"
+export PATH="$HOME/.aztec/bin:$PATH"
+export PATH="$HOME/.amp/bin:$PATH"
+export NARGO_HOME="$HOME/.nargo"
+export PATH="$NARGO_HOME/bin:$PATH"
+export PATH="$HOME/.spicetify:$PATH"
+alias starkup="curl --proto '=https' --tlsv1.2 -sSf https://sh.starkup.sh | sh -s --"

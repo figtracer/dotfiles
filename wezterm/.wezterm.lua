@@ -1,10 +1,10 @@
 local wezterm = require 'wezterm'
 
 return {
-    color_scheme = 'Catppuccin Mocha',
+    color_scheme = 'GitHub Dark',
     enable_tab_bar = false,
     font_size = 16.0,
-    font = wezterm.font('JetBrains Mono'),
+    font = wezterm.font('JetBrainsMono Nerd Font'),
     macos_window_background_blur = 30,
     window_background_opacity = 1.0,
     window_decorations = 'RESIZE',
