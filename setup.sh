@@ -1,27 +1,37 @@
 #!/usr/bin/env bash
-xargs brew install < ./homebrew/leaves.txt
+set -e
 
-# Install tmux plugin manager
-TMUX_TARGET_DIR="$HOME/.tmux/plugins/tpm"
+echo "==> Installing Homebrew packages..."
+brew install \
+  neovim \
+  tmux \
+  starship \
+  fzf \
+  zoxide \
+  bat \
+  tree \
+  stow \
+  zsh-autosuggestions \
+  ripgrep \
+  fd
 
-if [ -d "$TMUX_TARGET_DIR" ]; then
-    echo "The directory $TMUX_TARGET_DIR already exists. Skipping clone operation."
-else
-    echo "Cloning tmux plugin manager..."
-    git clone https://github.com/tmux-plugins/tpm "$TMUX_TARGET_DIR"
-    
-    if [ $? -eq 0 ]; then
-        echo "Successfully cloned tmux plugin manager to $TMUX_TARGET_DIR"
-    else
-        echo "Failed to clone tmux plugin manager"
-        exit 1
-    fi
+echo "==> Installing Rust toolchain..."
+if ! command -v rustup &>/dev/null; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  source "$HOME/.cargo/env"
 fi
 
-# Stow the dotfiles
+echo "==> Installing tmux plugin manager..."
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [ ! -d "$TPM_DIR" ]; then
+  git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+
+echo "==> Stowing dotfiles..."
 stow --target="$HOME/.config/nvim" nvim
 stow --target="$HOME/.config/" starship
 stow --target="$HOME/.config/tmux" tmux
-stow --target="$HOME/" wezterm
+stow --target="$HOME/.config/ghostty" ghostty
 stow --target="$HOME/" zshrc
 
+echo "==> Done! Open a new shell and run 'prefix + I' in tmux to install plugins."

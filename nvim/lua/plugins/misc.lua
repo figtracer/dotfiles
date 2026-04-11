@@ -1,6 +1,2 @@
--- worktree settings
-require('git-worktree').setup()
-
--- Enable Comment.nvim
 require('Comment').setup()
-
+require("nvim-autopairs").setup {}

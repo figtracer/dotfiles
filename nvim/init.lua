@@ -1,20 +1,17 @@
--- Leader key must be set before plugins are loaded
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+require('options')
 require('keymaps')
 require('plugins.lazy')
-require('plugins.misc')
-require('plugins.lualine')
-require('options')
-require('misc')
-require('plugins.dap')
-require('plugins.gitsigns')
-require('plugins.tele')
-require('plugins.treesitter')
 require('plugins.lsp')
+require('plugins.treesitter')
+require('plugins.tele')
 require('plugins.trouble')
+require('plugins.gitsigns')
+require('plugins.lualine')
 require('plugins.zenmode')
+require('misc')
 
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
